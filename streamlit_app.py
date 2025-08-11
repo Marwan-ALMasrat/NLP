@@ -1,14 +1,22 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
-from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+import seaborn as sns
+from wordcloud import WordCloud
 import io
 import base64
 from PIL import Image
 import json
 import os
+
+# Try to import plotly, fallback to matplotlib if it fails
+try:
+    import plotly.express as px
+    import plotly.graph_objects as go
+    PLOTLY_AVAILABLE = True
+except ImportError:
+    PLOTLY_AVAILABLE = False
+    st.warning("Plotly غير متاح، سيتم استخدام matplotlib بدلاً منه")
 
 # استيراد الوحدات المخصصة
 try:
@@ -88,6 +96,31 @@ def initialize_models():
         st.error(f"فشل في تحميل النماذج: {e}")
         return None, None, None
 
+# دالة لإنشاء المخططات
+def create_chart(data, chart_type="bar", title=""):
+    """إنشاء مخطط باستخدام plotly أو matplotlib"""
+    if PLOTLY_AVAILABLE:
+        if chart_type == "bar":
+            fig = px.bar(data, title=title)
+        elif chart_type == "pie":
+            fig = px.pie(data, title=title)
+        elif chart_type == "line":
+            fig = px.line(data, title=title)
+        return st.plotly_chart(fig, use_container_width=True)
+    else:
+        # استخدام matplotlib كبديل
+        fig, ax = plt.subplots(figsize=(10, 6))
+        if chart_type == "bar":
+            ax.bar(data.index, data.values)
+        elif chart_type == "pie":
+            ax.pie(data.values, labels=data.index, autopct='%1.1f%%')
+        elif chart_type == "line":
+            ax.plot(data.index, data.values)
+        ax.set_title(title)
+        plt.xticks(rotation=45)
+        st.pyplot(fig)
+        plt.close()
+
 # تحميل النماذج
 classifier, summarizer, extractor = initialize_models()
 
@@ -116,9 +149,12 @@ st.sidebar.markdown("### 📊 حول التطبيق")
 st.sidebar.info(
     """
     **المميزات:**
-    - تصنيف الأخبار إلى فئات محددة
-    - تلخيص النصوص الطويلة
-    - استخراج الكيانات الهامة (أشخاص، أماكن، منظمات)
-    - عرض الإحصائيات والرسوم البيانية التفاعلية
+    - تصنيف الأخبار
+    - تلخيص النصوص
+    - استخراج الكيانات
+    - تحليل شامل
     """
 )
+
+# باقي الكود...
+# يمكنك إضافة باقي منطق التطبيق هنا
