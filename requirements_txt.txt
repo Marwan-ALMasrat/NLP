@@ -7,11 +7,11 @@ nltk==3.8.1
 spacy==3.6.1
 transformers==4.33.2
 torch==2.0.1
-matplotlib==3.7.2
-seaborn==0.12.2
+plotly==5.16.0
 wordcloud==1.9.2
 textstat==0.7.3
 arabic-reshaper==3.0.0
 python-bidi==0.4.2
 Pillow==10.0.0
 requests==2.31.0
+kaleido==0.2.1
