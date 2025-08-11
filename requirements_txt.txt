@@ -7,7 +7,9 @@ nltk==3.8.1
 spacy==3.6.1
 transformers==4.33.2
 torch==2.0.1
-plotly==5.15.0
+plotly==5.14.1
+kaleido==0.2.1
+tenacity>=6.2.0
 wordcloud==1.9.2
 textstat==0.7.3
 arabic-reshaper==3.0.0
